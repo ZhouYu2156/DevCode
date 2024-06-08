@@ -1,0 +1,79 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2206351",
+      "name": "icon-play",
+      "font_class": "play",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "2839191",
+      "name": "play_play",
+      "font_class": "play_play",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "8815653",
+      "name": "music",
+      "font_class": "music",
+      "unicode": "e924",
+      "unicode_decimal": 59684
+    },
+    {
+      "icon_id": "10614368",
+      "name": "play",
+      "font_class": "play1",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "16615944",
+      "name": "play",
+      "font_class": "play2",
+      "unicode": "e6ab",
+      "unicode_decimal": 59051
+    },
+    {
+      "icon_id": "18921108",
+      "name": "music_play",
+      "font_class": "music_play",
+      "unicode": "e720",
+      "unicode_decimal": 59168
+    },
+    {
+      "icon_id": "19674018",
+      "name": "播放",
+      "font_class": "play-square",
+      "unicode": "eb16",
+      "unicode_decimal": 60182
+    },
+    {
+      "icon_id": "19674019",
+      "name": "播放",
+      "font_class": "play-circle",
+      "unicode": "eb17",
+      "unicode_decimal": 60183
+    },
+    {
+      "icon_id": "27994479",
+      "name": "Music",
+      "font_class": "Music",
+      "unicode": "e762",
+      "unicode_decimal": 59234
+    },
+    {
+      "icon_id": "37641485",
+      "name": "Music",
+      "font_class": "Music1",
+      "unicode": "e86b",
+      "unicode_decimal": 59499
+    }
+  ]
+}
