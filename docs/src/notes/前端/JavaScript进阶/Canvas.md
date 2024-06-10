@@ -340,21 +340,27 @@ fillTriangle();
 
 
 
-### 内置方法
+### 内置属性和方法
 
 | 函数名称 | 功能描述 |
 | :----: | :----: |
 | `strokeRect(x, y, width, height)` | 绘制一个矩形的边框 |
 | `fillRect(x, y, width, height)` | 绘制一个填充的矩形 |
 | `clearRect(x, y, width, height)` | 清除指定的矩形区域，然后这块区域会变的完全透明。 |
-| `beginPath()` | 新建一条路径，路径一旦创建成功，图形绘制命令被指向到路径上生成路径 |
 | `moveTo(x, y)` | 把画笔移动到指定的坐标`(x, y)`。相当于设置路径的起始点坐标。 |
+| `beginPath()` | 新建一条路径，路径一旦创建成功，图形绘制命令被指向到路径上生成路径 |
 | `closePath()` | **闭合路径。**闭合路径之后，图形绘制命令又重新指向到上下文中。在填充颜色时，需要根据路径的闭合方式进行填充 |
 | `stroke()` | 通过线条来绘制图形轮廓。根据路径绘制描边，前提要设置好描边样式的值(`strokeStyle`) |
 | `fill()` | 通过闭合区域生成实心的图形 |
-| `arc` | 绘制弧形（也是绘制圆的方法） |
+| `arc(x, y, radius, startAngle, endAngle)` | 绘制弧形（也是绘制圆的方法） |
 | `fillText()` | 绘制实心文本 |
 | `strokeText()` | 绘制文字轮廓 |
+| `fillStyle` | 设置图形的填充颜色 |
+| `strokeStyle` | 设置图形轮廓的颜色 |
+| `globalAlpha` | 这个属性影响到 canvas 里所有图形的透明度，有效的值范围是 0.0 （完全透明）到 1.0（完全不透明），默认是 1.0。**globalAlpha** 属性在需要绘制大量拥有相同透明度的图形时候相当高效。不过，我认为使用rgba()设置透明度更加好一些。 |
+| `lineWidth` | 线宽。只能是正值。默认是 1.0。 |
+| `lineCap` | 线条末端样式。可选值`butt(线段末端以方形结束)`、`round(线段末端以圆形结束)`、`square(线段末端以方形结束，但是增加了一个宽度和线段相同，高度是线段厚度一半的矩形区域。)` |
+| `lineJoin` | `round` 通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。 圆角的半径是线段的宽度。`bevel`在相连部分的末端填充一个额外的以三角形为底的区域， 每个部分都有各自独立的矩形拐角。`miter(默认)`通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。 |
 
 
 
@@ -535,7 +541,7 @@ ctx.fillRect(0, 0, 100, 100);
 
 
 
-### 贝塞尔曲线
+### 弧形控制
 
 ::: tip 说明
 
@@ -596,6 +602,30 @@ function arcTo() {
 }
 arcTo();
 ```
+
+
+
+### 贝塞尔曲线
+
+- 二次贝塞尔曲线
+
+```ts
+ctx.moveTo(50, 50);
+ctx.quadraticCurveTo(150, 150, 150, 300);
+ctx.stroke();
+```
+
+
+
+- 三次贝塞尔曲线
+
+```ts
+ctx.moveTo(50, 50);
+ctx.bezierCurveTo(250, 100, 250, 200, 350, 500);
+ctx.stroke();
+```
+
+
 
 
 
@@ -889,6 +919,127 @@ window.addEventListener("resize", (event) => {
 ```
 
 :::
+
+
+
+
+
+## 高级绘图
+
+
+
+### 黑客帝国雨
+
+::: details 代码详情
+
+```ts
+enum fontColor {
+  rainbow = "rainbow",
+  green = "green",
+}
+
+/**黑客帝国雨 */
+class Matrix {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  fontSize: number;
+  fontFamily: string;
+  charColor: string;
+  text: string;
+  cols: number;
+  drops: number[];
+  timer: number | null;
+
+  constructor(
+    canvas: HTMLCanvasElement,
+    text: string,
+    charColor: fontColor = fontColor.green,
+    fontSize: number = 18,
+    fontFamily: string = "Arial"
+  ) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.text = text;
+    this.fontSize = fontSize;
+    this.charColor = charColor;
+    this.fontFamily = fontFamily;
+    this.drops = [];
+    this.timer = null;
+    this.cols = Math.floor(canvas.width / this.fontSize);
+    this.init();
+  }
+  init() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    this.ctx.font = `700 ${this.fontSize}px ${this.fontFamily}`;
+    for (let col = 0; col < this.cols; col++) {
+      // 初始化位置
+      this.drops[col] = 0;
+    }
+    this.draw();
+    this.timer = setInterval(() => this.draw(), 1000 / 30);
+  }
+
+  draw() {
+    // 让背景色逐渐由透明到不透明
+    this.ctx.fillStyle = "rgba(0, 0, 0, .05)";
+    // 清空画布
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    // 给字体设置样式
+    this.ctx.font = `${this.fontSize}px ${this.fontFamily}`;
+    // 给字体添加颜色
+    this.ctx.fillStyle =
+      this.charColor === fontColor.rainbow
+        ? `${this.randColor()}`
+        : fontColor.green;
+    // 绘制文字
+    for (let i = 0; i < this.cols; i++) {
+      let index = Math.floor(Math.random() * this.text.length);
+      let x = i * this.fontSize;
+      let y = this.drops[i] * this.fontSize;
+      this.ctx.fillText(this.text[index], x, y);
+      // 如果要改变时间，肯定就是改变每次的起点
+      if (y >= this.canvas.height && Math.random() > 0.98) {
+        this.drops[i] = 0;
+      }
+      this.drops[i]++;
+    }
+  }
+
+  randColor() {
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  resize() {
+    this.canvas.width = document.documentElement.clientWidth;
+    this.canvas.height = document.documentElement.clientHeight;
+    this.init();
+  }
+}
+
+const matrix = new Matrix(canvas, "01");
+
+// 监听窗口大小变化
+window.addEventListener("resize", () => {
+  let timer: number | null = null;
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
+  timer = setTimeout(() => matrix.resize(), 300);
+});
+```
+
+:::
+
+
+
+
 
 
 

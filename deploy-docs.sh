@@ -13,7 +13,7 @@ export PRO=git@github.com:ZhouYu2156/zhouyu2156.github.io.git
 # 提交开发代码
 git add .
 git commit -m "auto commit Docs DevCode."
-git push -f ${DEV} master
+git push -f ${DEV} main
 
 # 提交打包代码
 cd ./docs
@@ -24,6 +24,10 @@ git init
 git add .
 git commit -m "auto commit project"
 git push -f ${PRO} master
+if [ $? -eq 0 ]; then
+	cd ..
+	rm -rf dist
+fi
 
 #cd ../
 #rm -rf dist
