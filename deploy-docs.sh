@@ -24,12 +24,7 @@ git add .
 git commit -m "auto commit docs/dist"
 #git pull --allow-unrelated-histories ${PRO} master
 git push -f ${PRO} master
-if [ $? -eq 0 ]; then
-	echo "上线代码提交完成"
-fi
-cd ..
-rm -rf dist
-echo "打包项目删除成功!"
+echo "上线代码提交完成"
 
 #cd ../
 #rm -rf dist
