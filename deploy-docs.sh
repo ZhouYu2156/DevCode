@@ -25,11 +25,11 @@ git add .
 git commit -m "auto commit project"
 git push -f ${PRO} master
 if [ $? -eq 0 ]; then
-	cd ..
-	rm -rf dist
-else
-	echo "上传失败"
+	echo "上线代码提交完成"
 fi
+cd ..
+rm -rf dist
+echo "打包项目删除成功!"
 
 #cd ../
 #rm -rf dist
