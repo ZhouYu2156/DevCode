@@ -27,6 +27,8 @@ git push -f ${PRO} master
 if [ $? -eq 0 ]; then
 	cd ..
 	rm -rf dist
+else
+	echo "上传失败"
 fi
 
 #cd ../
