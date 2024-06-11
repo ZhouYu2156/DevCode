@@ -24,7 +24,7 @@ git add .
 git commit -m "auto commit docs/dist"
 #git pull --allow-unrelated-histories ${PRO} master
 git push -f ${PRO} master
-echo "上线代码提交完成"
+echo "打包代码提交完成"
 
 #cd ../
 #rm -rf dist
