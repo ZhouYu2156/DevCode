@@ -23,7 +23,7 @@ cd src/dist/
 git init
 git add .
 git commit -m "auto commit project"
-git pull ${PRO} master
+git pull --allow-unrelated-histories ${PRO} master
 git push -f ${PRO} master
 if [ $? -eq 0 ]; then
 	echo "上线代码提交完成"
