@@ -6,7 +6,6 @@ footer: false
 <script setup lang='ts'>
 import References from '/.vitepress/theme/components/References.vue'
 import { ref } from 'vue'
-
 const VueItems = ref<ReferenceItems>([
     {
         id: 1,
@@ -35,6 +34,12 @@ const JavaScriptItems = ref<ReferenceItems>([
         link: 'https://shuaihuajun.github.io/project/jspro/',
         icon: 'https://shuaihuajun.github.io/favicon.ico'
     },
+    {
+	    id: 2,
+	    title: 'highlightjs',
+	    link: 'https://highlightjs.org/',
+	    icon: 'https://highlightjs.org/icon.png'
+	},
 ])
 
 </script>

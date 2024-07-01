@@ -9,7 +9,7 @@
 ::: tip 说明
 
 - 通过`tsc --init`初始化一个`TypeScript`的配置文件
-- 通过`tsc --watch`监听文件内容变化实时编译成`JavaScript`代码（`--watch 参数必须以命令行方式指定，不能在配置文件中添加参数来控制。`这个命令会正常按`tsconfig.json`中的配置来编译，如果命令行加了`tsconfig.json`文件中的配置参数，那么就不会读取配置文件，而是优先按照命令行的参数进行编译。总之，没有`tsconfig.json`配置文件，就按照`tsc`默认的配置来编译，如果有配置文件，并且命令行不加其他编译选项的参数，则按照配置文件的配置来编译。）
+- 通过`tsc --watch`或`tsc -w`监听文件内容变化实时编译成`JavaScript`代码（`--watch 参数必须以命令行方式指定，不能在配置文件中添加参数来控制。`这个命令会正常按`tsconfig.json`中的配置来编译，如果命令行加了`tsconfig.json`文件中的配置参数，那么就不会读取配置文件，而是优先按照命令行的参数进行编译。总之，没有`tsconfig.json`配置文件，就按照`tsc`默认的配置来编译，如果有配置文件，并且命令行不加其他编译选项的参数，则按照配置文件的配置来编译。）
 
 
 
@@ -311,7 +311,7 @@ console.log(b)
 
 
 
-### 最常用的12种工具类型
+## 6. 最常用的12种工具类型
 
 |                工具类型                |                               描述                                | 发布版本 |
 | :------------------------------------: | :---------------------------------------------------------------: | :------: |
@@ -327,3 +327,352 @@ console.log(b)
 |          `NonNullable<Type>`           |        从Type中排除null和undefined类型，并返回一个新的类型        |   2.8    |
 |           `Parameters<Type>`           |            获取函数类型Type的参数类型，以元祖类型返回             |   3.1    |
 |           `ReturnType<Type>`           |                   获取函数类型Type的返回值类型                    |   2.8    |
+
+
+
+
+### `Partial<T>`
+> 将类型 `T` 中的所有属性变为可选的。
+
+
+::: tip 原型：
+```ts
+// @ts-ignore
+type Partial<T> = { [P in keyof T]?: T[P] }
+```
+:::
+
+```ts
+interface User {
+  name: string;
+  email: string;
+  password: string;
+}
+
+type PartialUser = Partial<User>
+
+const user: PartialUser = {
+    name: "John Doe",
+    email: "johndoe@gmail.com"
+}
+
+console.log(user)
+```
+
+### `Required<T>`
+> 将类型 `T` 中的所有属性变为必选的。
+
+::: tip 原型：
+```ts
+// @ts-ignore
+type Required<T> = { [P in keyof T]-?: T[P] }
+```
+:::
+
+```ts
+interface User {
+  name: string;
+  email?: string;
+  password?: string;
+}
+
+type RequiredUser = Required<User>
+
+const user: RequiredUser = {
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    password: "123456"
+}
+
+console.log(user)
+```
+
+### `Readonly<T>`
+> 将类型 `T` 中的所有属性变为只读的。
+
+::: tip 原型：
+```ts
+// @ts-ignore
+type Readonly<T> = { readonly [P in keyof T]: T[P] }
+```
+:::
+
+```ts
+interface User {
+    name: string;
+    email?: string;
+    password?: string;
+}
+
+type ReadonlyUser = Readonly<User>
+
+const user: ReadonlyUser = {
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+}
+// user.password = "123456"     // 错误
+// user.name = "Jane Doe"       // 修饰为只读变量，只允许初始化的时候赋值，不允许后面再去修改
+console.log(user)
+```
+
+
+### `Record<K, T>`
+> 创建一个具有键类型 `K` 和值类型 `T` 的新对象类型。
+
+::: tip 原型：
+```ts
+// @ts-ignore
+type Record<K,T> = { [P in K]: T }
+```
+:::
+
+```ts
+// 例1
+interface AppConfig {
+    port: string,
+    env: 'dev' | 'prod'
+}
+
+const config: Record<string, AppConfig> = {
+    client: {
+        port: "3000",
+        env: "dev"
+    }
+}
+// 例2
+enum Sex {
+    Female= '女',
+    Male = '男'
+}
+const sex: Record<Sex, number> = {
+    [Sex.Male]: 1,
+    [Sex.Female]: 0
+}
+console.log(config)
+console.log(sex)
+
+// 例3
+interface User {
+    id: number;
+    name: string;
+    age?: number;
+    phone?: string;
+    address?: string
+}
+
+type newUser = Record<"admin" | "vip", User>
+// @ts-ignore
+const user: newUser = {
+    admin: {
+        id: 1,
+        name: 'rose'
+    },
+    vip: {
+        id: 2,
+        name: 'jack'
+    }
+}
+
+console.log(user)
+```
+
+- `Record`工作原理类似于下面这种方式：
+
+```ts
+type Weekday = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday';
+
+type WorkHours = {
+  [key in Weekday]: string;
+};
+
+```
+
+### `Pick<T, K>`
+> 从类型 `T` 中选择指定的属性 `K`，生成一个新类型。
+
+::: tip 原型：
+```ts
+type Pick<T, K extends keyof T> = {
+    [P in K]: T[P]
+}
+```
+:::
+
+```ts
+interface User {
+    id: number;
+    name?: string;
+    age: number;
+    phone: string
+}
+
+type PickUser = Pick<User, 'id' | 'name'>
+
+const user: PickUser = {
+    id: 1,
+    name: 'John'
+}
+
+console.log(user)
+```
+
+
+### `Omit<T, K>`
+> 从类型 `T` 中排除指定的属性 `K`，生成一个新类型。
+
+::: tip 原型：
+```ts
+type Omit<T,K> = Pick<T, Exclude<keyof T, K>>
+```
+:::
+
+```ts
+interface User {
+    id: number;
+    name: string;
+    age?: number;
+    phone?: string;
+    address?: string;
+    isAdmin: boolean
+}
+
+type PublicUser = Omit<User, "isAdmin">
+
+const user: PublicUser = {
+    id: 1,
+    name: "John",
+}
+console.log(user)
+```
+
+
+### `Exclude<T, U>`
+> 从类型 `T` 中排除指定的属性 `K`，生成一个新类型。
+
+::: tip 原型：
+```ts
+type Exclude<T,U> = T extends U ? never : T
+```
+:::
+
+```ts
+type Union = number | string;
+type Single = number
+
+type ExcludeType = Exclude<Union, Single>
+// 等价于 type ExcludeType = string
+```
+
+
+### `Extract<T, U>`
+> 从类型 `T` 中提取可以赋值给类型 `U` 的部分。
+
+::: tip 原型：
+```ts
+type Extract<T,U> = T extends U ? T : never
+```
+:::
+
+```ts
+type Union = number | string;
+type Single = number
+
+type ExtractType = Extract<Union, Single>
+// 等价于 type ExtractType = number
+```
+
+
+### `ReturnType<T>`
+> 获取函数类型 `T` 的返回值类型。
+
+::: tip 原型：
+```ts
+type ReturnType<T> = T extends ((...args: any) => infer R) ? R : any
+```
+:::
+
+```ts
+function sayHello (name: string): string {
+    return `Hello ${name}`
+}
+
+type t1 = ReturnType<typeof sayHello>
+
+const value: t1 = 'world'
+
+console.log(value)
+```
+
+### `Parameters<T>`
+> 获取函数类型 `T` 的参数类型元组。
+
+::: tip 原型：
+```ts
+type Parameters<T> = T extends ((...args: infer P) => any) ? P : never
+```
+:::
+
+```ts
+function sayHello (name: string, age: number): string {
+    return `Hello ${name}, my age is ${age}`
+}
+
+type t1 = Parameters<typeof sayHello>
+// type t1 = [name: string, age: number]
+const value: t1 = ['Jack', 18]
+
+console.log(value)
+```
+
+
+
+### `Awaited<T>`
+
+> 指明`Promise`返回结果的类型
+
+
+```ts
+interface User {
+  id: number;
+  name: string;
+}
+
+async function getUser() {
+  const response = await fetch("http://127.0.0.1:80/");
+  return <Awaited<User[]>>await response.json();
+}
+
+getUser().then((value) => {
+  console.log(value);
+});
+```
+
+
+
+
+
+## 7. `as const`修饰属性为常量(只读属性)
+
+::: tip 说明：
+
+普通变量用`as const`修饰后变成字面量常量或只读属性，对象用`as const`修饰后内部的所有属性均变为只读属性。
+
+:::
+
+
+
+```ts
+let age = 20 as const;
+// age = 30;		// 错误
+
+let user = {
+    name: 'jack',
+    age: 30,
+    address: {
+        province: '湖南',
+        city: '长沙' as const
+    }
+} as const
+// user.address.city = '岳阳'     // 错误
+console.log(user)
+```

@@ -17,7 +17,7 @@ git push -f ${DEV} main
 
 # 提交打包代码
 cd ./docs
-npm run build
+#npm run build
 
 cd src/dist/
 git add .

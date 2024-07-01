@@ -636,3 +636,115 @@ Reflect.defineMetadata(
 console.log(Reflect.getMetadata('profile',
     user, 'name'));
 ```
+
+
+
+## `this`指向
+
+| 调用方式          | 示例             | 函数中的`this` |
+| ----------------- | ---------------- | -------------- |
+| 通过`new`调用     | new method()     | 新实例对象     |
+| 直接调用          | method()         | 全局对象       |
+| 通过对象调用      | obj.method()     | 前面的对象     |
+| call、apply、bind | method.call(ctx) | 第一个参数     |
+
+
+
+## 通用防抖函数
+
+```ts
+
+function debounce(func: Function, duration = 500) {
+  let timerId: number;
+  return () => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      func();
+    }, duration);
+  };
+}
+
+const hello = () => {
+  console.log("hello world");
+};
+const debounce_func = debounce(hello);
+
+window.onresize = debounce_func;
+```
+
+
+
+## 循环标记
+
+```js
+outer: for (let i = 0; i < 10; i++) {
+  inner: for (let j = 0; j < 10; j++) {
+    if (i === 5 && j === 5) {
+      break inner;
+    }
+    console.log(i, j);
+  }
+}
+```
+
+
+
+## 自增运算符技巧
+
+::: tip 说明：
+
+记住：先算表达式的值再自增
+
+:::
+
+
+
+```ts
+var a = 1;
+// a++ => 1, a = 2
+// ++a => 3, a = 3
+// a++ => 3, a = 4
+// b = 1 + 3 * 3, a = 4
+var b = a++ + ++a * a++;
+console.log(a, b);		// 结果为 4 10
+```
+
+
+
+## 寻找不成对的数字
+
+::: tip 技巧：
+
+利用下面两个规则巧妙寻找不成对的数字：
+
+- 任何数字与自身异或等于 `0`
+
+- `0` 和任何数字异或都等于那个数字
+
+:::
+
+```ts
+function findUniqueNumber(...args: number[]) {
+  return args.reduce((a, b) => a ^ b, 0);
+}
+console.log(findUniqueNumber(5, 2, 2, 5, 1, 3, 4, 3, 4));
+```
+
+
+
+## `undefined` 等价于 `void 0`
+
+```ts
+console.log(void 0 === undefined);		// true
+```
+
+
+
+
+
+| API                                     | 含义                                                         |
+| --------------------------------------- | ------------------------------------------------------------ |
+| `Function.prototype.call(obj, ...args)` | 调用函数，绑定`this`为obj，<br />后续以列表的形式提供参数    |
+| `Function.prototype.apply(obj, args)`   | 调用函数，绑定`this`为obj，<br />args以数组的形式提供参数    |
+| `Function.prototype.bind(obj, ...args)` | 返回一个函数的拷贝，新函数的`this`被绑定为obj，<br />起始参数被绑定为args |
+

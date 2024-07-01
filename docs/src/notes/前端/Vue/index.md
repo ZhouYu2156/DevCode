@@ -27,6 +27,111 @@ $ npm run dev       # 注意看 package.json 文件中的项目启动命令，�
 
 ## 二、Vue 基础
 
+### 了解Vue
+
+#### Vue 实例属性
+- `$attrs`: `$attrs` 是一个对象，包含了父组件传递给子组件的属性，但是没有被 `props` 配置中的属性所声明的。
+- `$children`: `$children` 是一个数组，包含了当前实例的直接子组件的实例。
+- `$createElement`: `$createElement` 是一个函数，用于创建 Vue 虚拟 DOM 对象。
+- `$listeners`: `$listeners` 是一个对象，包含了当前实例的监听器对象。
+- `$options`: `$options` 是一个对象，包含了当前实例的选项对象。
+- `$parent`: `$parent` 是一个指向当前实例的父组件实例的引用。
+- `$refs`: `$refs` 是一个对象，包含了当前实例中的所有 `ref` 属性所声明的组件实例或 HTML 元素的引用。
+- `$root`: `$root` 是一个指向当前实例的根实例的引用。
+- `$scopedSlots`: `$scopedSlots` 是一个对象，包含了当前实例的作用域插槽内容。
+- `$slots`: `$slots` 是一个对象，包含了当前实例的插槽内容。
+- `$vnode`: `$vnode` 是一个对象，包含了当前实例的虚拟 DOM 对象。
+- `...`
+
+#### Vue原型属性
+- `$delete`: `$delete` 是一个函数，用于删除对象中的属性。
+- `$destroy`: `$destroy` 是一个函数，用于销毁当前实例。
+- `$emit`: `$emit` 是一个函数，用于触发事件。
+- `$forceUpdate`: `$forceUpdate` 是一个函数，用于强制更新当前实例。
+- `$mount`: `$mount` 是一个函数，用于挂载当前实例。
+- `$nextTick`: `$nextTick` 是一个函数，用于在下次 DOM 更新循环结束之后执行延迟回调。
+- `$on`: `$on` 是一个函数，用于监听事件。
+- `$once`: `$once` 是一个函数，用于监听事件，但只触发一次。
+- `$set`: `$set` 是一个函数，用于设置对象中的属性。
+- `$off`: `$off` 是一个函数，用于移除监听器。
+- `$watch`: `$watch` 是一个函数，用于监听数据变化。
+- `...`
+
+
+
+### 基础语法
+
+#### 1. 插值语法
+
+```html
+<h1>{{ message }}</h1>
+```
+
+
+
+#### 2. 指令
+
+##### 单向数据绑定
+
+- 完整写法
+
+```html
+<a v-bind:href="url">跳转百度</a>
+```
+
+- 简写
+
+```html
+<a :href="url">跳转百度</a>
+```
+
+##### 双向数据绑定
+
+::: tip 说明：
+
+实际底层还是对单项数据绑定添加了一个监听输入框变化的事件从而改变数据源的方法, `v-bind`和`@change`的结合。
+
+:::
+
+```html
+<input type="text" v-model="message">
+```
+
+
+
+
+
+
+
+#### 3. `el` 和 `data` 配置的两种方式
+
+```html
+<script>
+    Vue.config.productionTip = false
+    const app = new Vue({
+        // el: '#app',      // 第一种el选项的方式
+        /*data: {
+                message: 'Hello Vue!',      // data选项的方式
+            }*/
+        data() {
+            return {
+                message: 'Hello Vue!',  // 第二种函数调用的方式
+            }
+        }
+    })
+    app.$mount('#app')      // 函数调用的方式
+</script>
+```
+
+
+
+
+
+
+
+
+
+
 ## 三、Echarts 使用
 
 ::: tip 推荐
