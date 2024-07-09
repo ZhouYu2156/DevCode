@@ -1,4 +1,5 @@
 import { DefaultTheme } from "vitepress";
+import fs from "fs";
 import { readdir, stat } from "node:fs/promises";
 import path, { posix } from "node:path";
 import { fstat, link } from "node:fs";

@@ -31,3 +31,16 @@
 > 下载并安装完成后，终端输入 `ollama run llama2` 运行 `llama2` 大模型，由于首次没有安装，所以它会去下载该大语言模型，下载完成之后就可以运行起来了。还有其他大语言模型，可以在官网看看。
 
 :::
+
+
+## 谷歌浏览器插件推荐
+::: tip 下载
+- 推荐1：[谷歌应用商店（国外）](https://chromewebstore.google.com/)
+- 推荐2：[极简插件（国内）](https://chrome.zzzmh.cn/#/index)
+- JSON可视化：[jsoncrack](https://jsoncrack.com/editor)
+:::
+
+| 插件名称 |             插件功能描述             |
+| :------: | :----------------------------------: |
+| JSONView | 美化JSON格式，可以折叠、展开对象层级 |
+|  XPath   |         测试Xpath语法解析DOM         |

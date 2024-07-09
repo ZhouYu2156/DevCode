@@ -21,6 +21,7 @@ import {
   sidebar,
   nav,
 } from "./configuration";
+import { isProxy } from "util/types";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
