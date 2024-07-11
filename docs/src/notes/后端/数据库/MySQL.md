@@ -1,5 +1,20 @@
 # MySQL 数据库
 
+::: info 中文自我介绍
+大家好，我叫周玉，今年二十五岁，现居浙江省杭州市，祖籍湖南省道县。目前我正在找一个后端开发工程师的岗位，我掌握的技术有django、flask框架，并且熟练使用python编程，了解常用的数据结构与算法基础，具有扎实的计算机基础。
+
+在个人品质方面，对待工作积极认真、负责，并且乐于助人。曾在团队项目开发中，作为项目组组长，我积极跟进项目进度，通过与团队成员的研讨帮助小组成员攻克技术难题，使得项目取得圆满成功。
+
+在个人习惯方面，积极上进且持续学习。关注前沿技术，扩展自己的技术栈，目前掌握Vue、React和与之配套的工具库的基本应用，对python人工智能应用和服务器运维管理都有一定的应用能力，你知道的，毕竟作为我们技术码农，计算机的开发岗位肯定是需要掌握从开发到部署一条龙的基本服务技术的。
+:::
+::: info 英文版本
+Hello everyone, my name is Zhou Yu, a 25-year-old backend developer residing in Hangzhou, Zhejiang Province, with ancestral roots in Dao County, Hunan Province. I am actively seeking a backend development engineer position. My technical expertise includes proficiency in the django and flask frameworks, along with extensive Python programming skills. I have a solid grasp of commonly used data structures and algorithm fundamentals, along with a robust foundation in computer science.
+
+In terms of personal qualities, I am proactive, responsible, and eager to assist others. As the leader of a team project, I diligently monitored progress and guided team members through technical challenges, ensuring the project's successful completion.
+
+Regarding personal habits, I am highly motivated and committed to continuous learning. I stay abreast of cutting-edge technologies, broadening my technical expertise to include basic proficiency in Vue and React, as well as their associated tool libraries. Additionally, I possess considerable capabilities in Python artificial intelligence applications and server operations, essential skills for a computer developer in a development-to-deployment service technology role.
+:::
+
 ## 基础篇
 
 ### MySQL 概述
@@ -1142,20 +1157,187 @@ select st.name as '姓名', sc.math as '数学', sc.english as '英语', sc.chin
 
   > 自连接查询，可以是内连接查询，也可以是外连接查询。
 
+> 示例
 
+```sql
+/**查询员工与所属领导 */
+select a.name, b.name from emp a, emp b where a.manager_id = b.id;
+```
 
+#### 联合查询
 
+> 对于 `union` 查询，就是把多次查询的结果合并起来，形成一个新的查询结果集。
 
+```sql
+select 字段列表 from 表A ...
+union [all]
+select 字段列表 from 表B ...;
+```
+
+> 对于联合查询的多张表的列数必须保持一致，字段类型也需要保持一致。
+>
+> `union all` 会将全部的数据直接合并在一起，`union`会对合并之后的数据去重。
+
+> 示例: 将薪资低于5000的员工，和年龄大于50岁的员工全部查询出来
+
+```sql
+/**同一个人满足多个条件会多条重复的查询记录 */
+select * from emp where salary < 5000
+union all
+select * from emp where age > 50;
+
+/** union 会对查询之后合并的数据去重, 保留满足条件的第一条记录 */
+select * from emp where salary < 5000
+union
+select * from emp where age > 50;
+```
 
 
 #### 子查询
 
+1. 概念: `SQL`语句中嵌套`select`语句，称为`嵌套查询`，又称`子查询`。
 
+```sql
+select * from t1 where column1 = (select column1 from t2);
+```
 
+> 子查询外部的雨具可以是`insert` / `update` / `delete` / `select` 的任何一个。
+
+2. 根据子查询结果不同，分为：
+     - 标量子查询 (子查询结果为单个值)
+     - 列子查询 (子查询结果为一列)
+     - 行子查询 (子查询结果为一行)
+     - 表子查询 (子查询结果为多行多列)
+
+3. 根据子查询位置，分为：`where`之后、`from`之后、`select`之后
+
+- 列子查询
+
+|  操作符  |                  描述                  |
+| :------: | :------------------------------------: |
+|   `in`   |      在指定的集合范围之内，多选一      |
+| `not in` |         不在指定的集合范围之内         |
+|  `any`   |  子查询返回列表中，有任意一个满足即可  |
+|  `some`  | 与any等同，使用some的地方都可以使用any |
+|  `all`   |    子查询返回列表的所有值都必须满足    |
+
+> 示例1
+
+```sql
+/**查询比财务部所有人工资都高的员工信息 */
+-- a. 查询所有 财务部 人员工资
+select id from dept where name = '财务部';
+
+select salary from emp where dept_id = (select id from dept where name = '财务部');
+
+-- b. 比财务部所有人工资都高的员工信息
+select * from emp where salary > all (select salary from emp where dept_id = (select id from dept where name = '财务部'));
+
+```
+
+- 行子查询
+
+> 子查询返回的结果是一行(可以是多列), 这种子查询称为行子查询。
+>
+> 常用的操作符：`=`、`< >`、`in`、`not in`
+
+> 示例
+
+```sql
+/** 查询与"张无忌"的薪资及直属领导相同的员工信息 */
+-- a. 查询"张无忌"的薪资及直属领导
+select salary, managerid from emp where name = '张无忌';
+
+-- b. 查询与"张无忌"的薪资及直属领导相同的员工信息
+-- select * from emp where salary = 12500 and managerid = 1;    -- 下面均等同
+-- select * from emp where (salary, managerid) = (12500, 1);
+select * from emp where (salary, managerid) = (select salary, managerid from emp where name = '张无忌');
+```
+
+- 表子查询
+
+> 子查询返回的结果是多行多列，这种子查询称为`表子查询`。
+>
+> 常用的操作符：`in`
+
+> 示例
+
+```sql
+/** 查询与"鹿杖客" , "宋远桥" 的职位和薪资相同的员工信息 */
+-- a. 查询"鹿杖客" , "宋远桥" 的职位和薪资
+select job, salary from emp where name = '鹿杖客' or name = '宋远桥';
+
+-- b. 查询与"鹿杖客" , "宋远桥" 的职位和薪资相同的员工信息
+select * from emp where (job, salary) in (select job, salary from emp where name = '鹿杖客' or name = '宋远桥');
+```
 
 
 ### 事务
 
+#### 事务简介
+
+::: info 解释
+- **事务** 是一组操作的集合，它是一个不可分割的工作单位，事务会把所有的操作作为一个整体一起向系统提交或撤销操作请求，即这些操作要么同时成功，要么同时失败。
+:::
+
+#### 事务操作
+
+- 查看/设置事务提交方式
+
+```sql
+-- 查看事务自动提交状态
+select @@autocommit;
+-- 关闭事务自动提交
+set @@autocommit=0;
+```
+
+- 开启事务
+
+```sql
+/**控制事务的两种方式：
+    (1)关闭事务提交 set @@autocommit=0;
+    (2)通过 start transaction; 或 begin; 显式开启事务
+*/
+start transaction;
+-- 或者
+begin;
+```
+
+
+- 提交事务
+
+```sql
+commit;
+```
+
+
+- 回滚事务
+
+```sql
+rollback;
+```
+
+
+#### 事务四大特性
+
+::: tip 介绍
+- 原子性(Auomicity): 事务是不可分割的最小操作单元，要么全部成功，要么全部失败。
+- 一致性(Consistency): 事务完成时，必须使所有的数据都保持一致状态。
+- 隔离性(Isolation): 数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立环境下运行。
+- 持久性(Durability): 事务一旦提交或混滚，它对数据库中的数据的改变就是永久的。
+
+:::
+
+
+#### 并发事务问题
+
+|    问题    | 描述                                                                                                     |
+| :--------: | :------------------------------------------------------------------------------------------------------- |
+|    脏读    | 一个事物读到另外一个事务还没有提交的数据                                                                 |
+| 不可重复读 | 一个事物先后读取同一条记录，但两次读取的数据不同，称之为不可重复读                                       |
+|    幻读    | 一个事物按照条件查询数据时，没有对应的数据行，但是在插入数据时，又发现这行数据已经存在，好像出现了"幻影" |
+
+#### 事务隔离级别
 
 
 

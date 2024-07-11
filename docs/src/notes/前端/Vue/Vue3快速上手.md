@@ -1,21 +1,5 @@
 # Vue3快速上手
 
-::: info 中文自我介绍
-大家好，我叫周玉，今年二十五岁，现居浙江省杭州市，祖籍湖南省道县。目前我正在找一个后端开发工程师的岗位，我掌握的技术有django、flask框架，并且熟练使用python编程，了解常用的数据结构与算法基础，具有扎实的计算机基础知识。
-
-在个人品质方面，对待工作积极认真、负责，并且乐于助人。曾在团队项目开发中，作为项目组组长，我积极跟进项目进度，通过与团队成员的互相讨论最终帮助小组成员攻克技术难题，使得项目取得圆满成功。
-
-在个人习惯方面，积极上进且持续学习。关注前沿技术，扩展自己的技术栈，目前掌握Vue、React和与之配套的工具库的基本应用，对python人工智能应用和服务器运维管理都有一定的应用能力，你知道的，毕竟作为我们技术码农，计算机的开发岗位肯定是需要掌握从开发到部署一条龙的基本服务技术的。
-:::
-::: info 英文版本
-Hello everyone, my name is Zhou Yu. I am 25 years old and currently reside in Hangzhou, Zhejiang Province. My ancestral home is Dao County, Hunan Province. I am currently looking for a position as a backend development engineer. My skills include django and flask frameworks, and I am proficient in using Python programming. I have a solid understanding of commonly used data structures and algorithm foundations, and possess a solid foundation in computer science.
-
-In terms of personal qualities, I approach work actively, seriously, responsibly, and am willing to help others. As the team leader in team project development, I actively followed up on project progress and helped team members overcome technical difficulties through mutual discussions, resulting in a successful project.
-
-In terms of personal habits, actively strive for progress and continue to learn. Pay attention to cutting-edge technology, expand one's own technology stack, and currently master the basic applications of Vue, React, and their supporting tool libraries. Have certain application capabilities in Python artificial intelligence applications and server operation and maintenance management. As a technology coder, computer development positions definitely require mastery of basic service technologies from development to deployment.
-:::
-
-
 
 ## `$emit` 和 `defineEmits`
 
