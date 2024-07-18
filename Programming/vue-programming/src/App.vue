@@ -8,9 +8,9 @@ import Modals from './components/Modals.vue';
 import Relation from './components/Relation.vue';
 
 /** 联系方式进 */
-import qq from '@/assets/qq.jpg'
-import wechat from '@/assets/wechat.jpg'
-import sponsor from '@/assets/sponsor.jpg'
+import qq from '@/static/qq.jpg'
+import wechat from '@/static/wechat.jpg'
+import sponsor from '@/static/sponsor.jpg'
 
 /** 切换背景特效 */
 const flag = ref(false)

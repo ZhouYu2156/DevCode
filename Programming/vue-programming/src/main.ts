@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 /** 导入自定义样式 */
-import './assets/main.css'
+import './static/main.css'
 
 import { createApp } from 'vue'
 
