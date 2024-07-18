@@ -1339,6 +1339,24 @@ rollback;
 
 #### 事务隔离级别
 
+| 隔离级别                       | 脏读 | 不可重复读 | 幻读 |
+| :----------------------------- | :--- | :--------- | :--- |
+| `Read uncomimmited`            | √    | √          | √    |
+| `Read commited`                | ×    | √          | √    |
+| `Repeatable read` (mysql 默认) | ×    | ×          | √    |
+| `Serializable`                 | ×    | ×          | ×    |
+
+- 查看事务隔离级别
+
+```sql
+select @@transaction_isolation;
+```
+
+- 设置事务隔离级别
+
+```sql
+set [session|global] transaction isolation level { read uncommitted | read committed | repeatable read | serializable}
+```
 
 
 ## 进阶篇

@@ -5,7 +5,10 @@
 **/docs/**/node_modules
 **/Programming/node_modules
 **/Programming/**/node_modules
+**/Programming/vue-programming/node_modules
 /Programming/**/Programming
+**/dist
+**/*.zip
 **/.pnp
 **/.pnp.js
 
