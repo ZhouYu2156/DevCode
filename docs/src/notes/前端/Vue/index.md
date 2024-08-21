@@ -653,3 +653,137 @@ export default {
 ```
 
 :::
+
+
+
+
+
+## 四、ElementPlus主题色定制
+
+
+
+### 下载配置所需的插件
+
+```bash
+$ npm i -D sass unplugin-auto-import unplugin-vue-components
+```
+
+
+
+
+
+### 1. 新建 `@/styles/element/index.scss`
+
+```scss
+/* 只需要重写你需要的即可 */
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+    $colors: (
+        "white": #ffffff,
+        "black": #000000,
+        "primary": (
+            "base": #0c76e0
+        ),
+        "success": (
+            "base": #07c972
+        ),
+        "warning": (
+            "base": #ee9b1f
+        ),
+        "danger": (
+            "base": #dc2121
+        ),
+        "error": (
+            "base": #e10e0e
+        ),
+        "info": (
+            "base": #45ccd6
+        )
+    )
+);
+```
+
+
+
+2. 配置 `vite.config.ts`
+
+```ts
+import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
+
+// 引入 Element Plus 的自动导入功能
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    vue(),
+    vueDevTools(),
+    AutoImport({
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
+    }),
+    Components({
+      resolvers: [
+        // 1、配置ElementPlus采用sass样式配色系统
+        ElementPlusResolver({ importStyle: 'sass' }),
+      ],
+    }),
+  ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // 2、自动导入定制化样式文件进行样式覆盖
+        additionalData: `
+        @use "@/styles/element/index.scss" as *;
+        `,
+      },
+    },
+  }
+})
+```
+
+
+
+### 3. `main.ts` 文件中的配置
+
+```ts
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+// 导入 element plus 的 所有 css 样式
+// import 'element-plus/dist/index.css'
+//导入 element plus 的所有 sass 样式进行编译
+import "element-plus/theme-chalk/src/index.scss";
+// 导入element plus 暗色主题样式(也可以用同样的方式自己定义暗色主题的颜色)
+import 'element-plus/theme-chalk/dark/css-vars.css';
+// 导入自定义样式
+import './assets/main.css'
+
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+
+import App from './App.vue'
+import router from './router'
+
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(router)
+
+app.mount('#app')
+
+```
+
+
+
+
+
