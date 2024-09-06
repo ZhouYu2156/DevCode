@@ -1,13 +1,6 @@
 <script setup lang='ts'>
 import { ref, PropType } from 'vue'
-
-
-type ReferenceItems = {
-    id: Number,
-    title: String,
-    link: String,
-    icon: String
-}[]
+import { ReferenceItems } from '../../configuration/modules/types'
 
 const props = defineProps({
     items: {
@@ -15,7 +8,6 @@ const props = defineProps({
         required: true
     }
 })
-
 
 </script>
 
@@ -27,7 +19,7 @@ const props = defineProps({
                 target="_blank">
                 <span style="padding: 2px 5px;">{{ item.title }}</span>
                 <span>
-                    <img :src="item.icon" alt="pinia" width="50">
+                    <img :src="item.icon" :alt="item.title" width="50">
                 </span>
             </a>
         </div>
