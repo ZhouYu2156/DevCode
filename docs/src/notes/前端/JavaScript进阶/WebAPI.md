@@ -226,3 +226,15 @@ const toggleScreen = (el: any) => {
 :::
 
 
+
+
+
+实时音视频通信
+
+
+
+![WebRTC架构图](./images/WebRTC架构图.png)
+
+
+
+![WebRTC结构图](./images/WebRTC结构图.png)
