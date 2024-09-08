@@ -5,7 +5,8 @@ footer: false
 
 <script setup lang='ts'>
 import References from '/.vitepress/theme/components/References.vue'
-import {JavaScriptItems, 
+import {FrontEndItems,
+        JavaScriptItems, 
         JavaScriptToolItems, 
         NodejsItems, 
         AnimationLibItems, 
@@ -13,10 +14,14 @@ import {JavaScriptItems,
         ReactItems, 
         ComponentLibItems, 
         PythonItems, 
-        LinuxItems, } from '/.vitepress/configuration/modules/sources/'
+        LinuxItems, 
+        BlogItems, } from '/.vitepress/configuration/modules/sources/'
 </script>
 
 # 快速文档参考手册
+
+## 辅助工具
+<References :items="FrontEndItems" />
 
 ## JavaScript & TypeScript
 <References :items="JavaScriptItems"/>
@@ -44,3 +49,6 @@ import {JavaScriptItems,
 
 ## Linux 运维
 <References :items="LinuxItems"/>
+
+## 优秀博客
+<References :items="BlogItems"/>

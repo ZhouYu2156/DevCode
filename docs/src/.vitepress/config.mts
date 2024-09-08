@@ -1,5 +1,8 @@
 import { defineConfig } from "vitepress";
-
+// 自动导入插件
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 const ICP = "湘ICP备2024064075号-1";
 const POLICE = "湘公网安备43112402000148号";
@@ -22,10 +25,19 @@ import {
   sidebar,
   nav,
 } from "./configuration";
-import { isProxy } from "util/types";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  vite: {
+    plugins: [
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
+    ],
+  },
   lang: "zh-CN",
   title: "极 客 兔",
   // outlineTitle: '笔记大纲',   // 右侧大纲标题

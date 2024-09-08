@@ -3,6 +3,25 @@ import { ReferenceItems } from '../modules/types'
 
 /**
  * @description
+ * 前端开发相关的一些辅助文档网站
+ */
+export const FrontEndItems = ref<ReferenceItems>([
+    {
+        id: 1,
+        title: '配色主题',
+        link: 'https://flatuicolors.com/',
+        icon: 'https://flatuicolors.com/static/favicon.ico'
+    },
+    {
+        id: 2,
+        title: '生成圆角',
+        link: 'https://9elements.github.io/fancy-border-radius/#',
+        icon: 'https://9elements.github.io/fancy-border-radius/favicon-32x32.png'
+    },
+])
+
+/**
+ * @description
  * javascript 学习文档网站
  */
 export const JavaScriptItems = ref<ReferenceItems>([
@@ -114,6 +133,18 @@ export const JavaScriptToolItems = ref<ReferenceItems>([
         title: 'clipboardjs',
         link: 'https://clipboardjs.com/',
         icon: 'https://clipboardjs.com/favicon.ico'
+    },
+    {
+        id: 8,
+        title: '纯CSS动画库',
+        link: 'https://animxyz.com/docs',
+        icon: 'https://animxyz.com/assets/static/animxyz-logo.ac8d93a.39f3bde368e480505b70778acaa2ac74.png'
+    },
+    {
+        id: 9,
+        title: '贝塞尔曲线可视化',
+        link: 'https://cubic-bezier.com/',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAVtJREFUOE9jZFi5s4GBkameAQvIVpFlmHrnMTYpTDFGhp8M//51MDKs2v0fl44GbSWGhqv3iDMQpIqR4SdeA5kZGRn+/sdpH1aLcBrIxczM8O3vX4Ku+x/qwsC4eg9cHU4DcXlXkI2VoUNXhSFNSRpsiMmeUwxn338ibKCdqCDDodfvwQrj5CUZFpppM7z5+Zuh8+YDhp6bD8HiXpIiDNuev0HxBd4wBKkEeWnmvacMGWevY3jfWJAPxXWQeMESy85iQgx7X70DG4YcPsgmrrDQZYg4cRnDEqwGVmsqMrToKDNIbT7M8PzHT4IRg6wAq4EmgnwMc021GPR3nSDJMJxexudVQjZguHCZuQ7Dix+/GIou3iKkl7iETYnrsHr5mJMpg9W+02S5DsPAq+6WDNo7j5NtGIaBlHoXw8DbnlYMqtuPUc+FFJkE1UwwL5NqCSO+KoBUwxj+/2sEAKfckNu9qD2CAAAAAElFTkSuQmCC'
     },
 ])
 
@@ -293,7 +324,7 @@ export const ReactItems = ref<ReferenceItems>([
  * @description
  * Python学习文档网站
  */
-export const PythonItems = ref([
+export const PythonItems = ref<ReferenceItems>([
     {
         id: 1,
         title: 'Python',
@@ -306,7 +337,7 @@ export const PythonItems = ref([
  * @description
  * Linux服务器相关的文档网站
  */
-export const LinuxItems = ref([
+export const LinuxItems = ref<ReferenceItems>([
     {
         id: 1,
         title: 'Nginx',
@@ -319,11 +350,25 @@ export const LinuxItems = ref([
  * @description
  * 通用组件库网站
  */
-export const ComponentLibItems = ref([
+export const ComponentLibItems = ref<ReferenceItems>([
     {
         id: 1,
         title: 'UIverse',
         link: 'https://uiverse.io/',
         icon: 'https://uiverse.io/android-chrome-192x192.png'
     },
+])
+
+
+/**
+ * @description
+ * 优秀博客网站
+ */
+export const BlogItems = ref<ReferenceItems>([
+    {
+        id: 1,
+        title: '后盾人编程教程',
+        link: 'https://doc.houdunren.com/',
+        icon: '	https://doc.houdunren.com/logo.png'
+    }
 ])
