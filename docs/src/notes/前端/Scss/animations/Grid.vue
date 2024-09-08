@@ -119,11 +119,11 @@ const mergeFandG = () => {
 
 @for $i from 0 to 16 {
     .item:nth-child(#{$i + 1}) {
-        background: hsl($i * 40%, 100%, 74%);
+        background: hsl(calc($i * 40%), 100%, 74%);
     }
 
     .grid-layout:has(.item:nth-child(#{$i + 1}):hover) {
-        $r: floor($i / 4 + 1);
+        $r: floor(calc($i / 4 + 1));
         $c: $i % 4 + 1;
         $arr: 1fr 1fr 1fr 1fr;
         $rows: set-nth($arr, $r, 2fr);
