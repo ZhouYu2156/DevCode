@@ -1,0 +1,19 @@
+{
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "sass": "^1.70.0",
+    "unplugin-auto-import": "^0.18.2",
+    "unplugin-vue-components": "^0.27.4",
+    "vitepress": "^1.0.0-rc.40"
+  },
+  "scripts": {
+    "dev": "vitepress dev src --host 127.0.0.1 --port 80",
+    "build": "vitepress build src",
+    "preview": "vitepress preview src"
+  },
+  "type": "module",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "element-plus": "^2.8.2"
+  }
+}
