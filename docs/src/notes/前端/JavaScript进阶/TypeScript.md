@@ -3,7 +3,10 @@
 > - 官网: [TypeScript](https://www.typescriptlang.org/)
 >
 > - 中文学习网: [TypeScript](https://www.tslang.cn/docs/handbook/basic-types.html)
-
+> 
+> - 推荐阅读：[jsdocs文档](https://jsdoc.bootcss.com/index.html)
+> 
+> - 推荐阅读：[npm包管理器](https://www.npmjs.cn/)
 
 
 ::: tip 说明
@@ -11,6 +14,7 @@
 - 通过`tsc --init`初始化一个`TypeScript`的配置文件
 - 通过`tsc --watch`或`tsc -w`监听文件内容变化实时编译成`JavaScript`代码（`--watch 参数必须以命令行方式指定，不能在配置文件中添加参数来控制。`这个命令会正常按`tsconfig.json`中的配置来编译，如果命令行加了`tsconfig.json`文件中的配置参数，那么就不会读取配置文件，而是优先按照命令行的参数进行编译。总之，没有`tsconfig.json`配置文件，就按照`tsc`默认的配置来编译，如果有配置文件，并且命令行不加其他编译选项的参数，则按照配置文件的配置来编译。）
 
+:::
 
 
 ::: details
@@ -676,3 +680,459 @@ let user = {
 // user.address.city = '岳阳'     // 错误
 console.log(user)
 ```
+
+## 类装饰器
+
+### 1. 使用类装饰器用来扩展类的功能
+```ts
+// 类装饰器用来扩展类的功能
+
+/**
+ * 示例(1): 使用装饰器扩展类可以获取位置信息功能
+ */
+const MoveDecorator: ClassDecorator = (target) => {
+    console.dir(target)
+    target.prototype.getPosition = (): { x: number, y: number } => {
+        return { x: 200, y: 300 }
+    }
+}
+
+@MoveDecorator
+class Tank { }
+
+
+/**
+ * 示例(2): 使用装饰器扩展统一消息提示功能
+ */
+const MessageDecorator: ClassDecorator = (target) => {
+    target.prototype.showMessage = (message: string): void => {
+        console.log(message)
+    }
+}
+
+/**
+ * 定义抽象类结构, 给具体实现功能的子类继承, 从而避开TS类型检查
+ */
+abstract class AbStractLoginCtroller {
+    public login() { }
+    public showMessage(message: string): void { }
+}
+
+
+@MessageDecorator
+class LoginController extends AbStractLoginCtroller {
+    public login() {
+        console.log('登录业务处理...');
+        this.showMessage('登录成功！');
+    }
+}
+
+const loginCtroller = new LoginController()
+loginCtroller.login()
+```
+
+
+### 2. 使用类装饰器实现工厂函数
+```ts
+/**
+ * 工厂装饰器: 封装一个工厂，根据不同的参数，返回不同的实例
+ */
+const MusicDecorator = (type: 'Tank' | 'Player'): ClassDecorator => {
+    switch (type) {
+        case 'Tank':
+            return (target) => {
+                target.prototype.playMusic = () => {
+                    console.log(type, '播放战争音乐...')
+                }
+            }
+        default:
+            return (target) => {
+                target.prototype.playMusic = () => {
+                    console.log(type, '播放角色背景音乐...')
+                }
+            }
+    }
+}
+
+@MusicDecorator('Tank')
+class Tank {
+    public playMusic() { }
+}
+
+@MusicDecorator('Player')
+class Player {
+    public playMusic() { }
+}
+
+const tank = new Tank()
+const player = new Player()
+
+// 不同的类，调用相同方法就可以实现不同的功能了
+tank.playMusic()
+player.playMusic()
+```
+
+
+### 3. 方法装饰器
+
+- 示例(1): 修改方法和方法的属性
+```ts
+const showDecorator: MethodDecorator = (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    /**
+     * @param target 装饰的目标函数的原型对象
+     * @param propertyKey 装饰的方法名称
+     * @descriptor 该键对应的值相关的配置描述对象
+     */
+    console.log(target, propertyKey, descriptor)
+    /** 
+     * writable: 外部是否可修改
+     * ...
+     */
+    // descriptor.writable = false
+    /*descriptor.value = () => {
+        console.log('https://www.zhouyu2156.cn/')
+    }*/
+}
+
+
+class Person {
+    @showDecorator
+    public show() {
+        console.log('show')
+    }
+    @showDecorator
+    static greet(msg: string) {
+        console.log(msg)
+    }
+}
+
+const p = new Person()
+/*p.show = () => {
+    console.log('writable为false时, 外部不可修改该方法！')
+}*/
+p.show()
+
+Person.greet('Hello world！')
+```
+
+- 示例(2): 实现代码高亮
+```ts
+const highlightDecorator: MethodDecorator = (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const method = descriptor.value;
+    descriptor.value = () => {
+        return `<a style="color: red;" href="${method()}" target="_blank">${method()}</a>`
+    }
+}
+
+class Snippet {
+    @highlightDecorator
+    public response() {
+        return 'https://www.zhouyu2156.cn/'
+    }
+}
+
+document.body.insertAdjacentHTML('beforeend', new Snippet().response())
+```
+
+- 示例(3): 实现延迟调用功能
+```ts
+/**
+ * 实现方法延迟执行功能
+ * @param times 时间
+ * @returns 方法具有延迟执行的功能
+ */
+const SleepDecorator = (times: number): MethodDecorator => {
+    return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+        const method = descriptor.value;
+        descriptor.value = () => {
+            setTimeout(() => {
+                method()
+            }, times)
+        }
+    }
+}
+// 上面的代码可以简写如下
+const SleepDecorator1 = (times: number): MethodDecorator => (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const method = descriptor.value;
+    descriptor.value = () => {
+        setTimeout(() => {
+            method()
+        }, times)
+    }
+}
+
+
+/**
+ * 为了避免参数描述冗余过长, 下面进行简化
+ */
+const SleepDecorator2 = (times: number): MethodDecorator => (...args: any[]) => {
+    // 解构得到参数列表的第三个参数, 方法描述器
+    const [, , descriptor] = args;
+    const method = descriptor.value;
+    descriptor.value = () => {
+        setTimeout(() => {
+            method()
+        }, times)
+    }
+}
+
+
+
+class User {
+    @SleepDecorator(1000)
+    public login() {
+        console.log('用户登录业务功能')
+    }
+}
+
+
+new User().login()
+```
+
+- 示例(4): 异常捕获装饰器和工厂
+```ts
+/**
+ * 实现错误异常捕获装饰器
+ */
+const ErrorDecorator: MethodDecorator = (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const source = descriptor.value;
+    descriptor.value = () => {
+        try {
+            source();
+        } catch (error: any) {
+            console.log(`%c请求失败, 错误内容: ${error.message}`, 'color: red;');
+        }
+    }
+}
+/**
+ * 实现自定义错误提示装饰器工厂
+ * @param title 错误标题
+ * @param titleFontSize 标题文字大小
+ * @returns 
+ */
+const ErrorDecoratorFactory = (title: string = '默认提示标题', titleFontSize: number = 12): MethodDecorator => {
+    return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+        const source = descriptor.value;
+        descriptor.value = () => {
+            try {
+                source();
+            } catch (error: any) {
+                console.log(`%c${title}, 提示信息: ${error.message}`, `color: red; font-size: ${titleFontSize}px; `);
+            }
+        }
+    }
+}
+
+
+class User {
+    @ErrorDecorator
+    public login() {
+        throw new Error('登录失败！')
+    }
+
+    @ErrorDecoratorFactory('用户创建方法', 16)
+    public create() {
+        throw new Error('创建失败！')
+    }
+}
+
+const user = new User()
+user.login()
+user.create()
+```
+
+- 示例(5): 权限访问控制
+```ts
+const user = {
+    name: 'zs',
+    isLogin: false
+}
+/**
+ * 权限访问拦截的装饰器
+ */
+const AccessDecorator: MethodDecorator = (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const originalMethod = descriptor.value;
+    descriptor.value = () => {
+        if (user.isLogin) {
+            return originalMethod();
+        } else {
+            console.log('暂无认证, 请先登录！')
+        }
+    }
+}
+
+class User {
+    show() {
+        console.log('展示文章')
+    }
+
+    @AccessDecorator
+    public store() {
+        console.log('保存文章')
+    }
+}
+
+
+const u = new User()
+u.show()
+u.store()
+```
+
+- 示例(6): 权限控制
+```ts
+enum Permission {
+    Admin = 0b001,  // 管理员
+    User = 0b010,   // 普通用户
+    Guest = 0b100,   // 游客
+}
+
+type UserType = { name: string, isLogin: boolean, permissions: Permission }
+
+const user: UserType = {
+    name: 'admin',
+    isLogin: true,
+    permissions: Permission.Admin
+}
+
+const AccessDecorator = (args: string[]): MethodDecorator => (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const fn = <Function>descriptor.value;
+
+    descriptor.value = function () {
+        const permission = user.permissions;
+        switch (permission) {
+            case Permission.Admin:
+                return fn.call(this, args);
+            case Permission.User:
+                return fn.apply(this, [args]);
+            default:
+                return console.log('无权限');
+        }
+    }
+}
+
+class Article {
+    /**
+     * 展示文章不需要权限
+     */
+    show() { }
+    /**
+     * 发布文章设置权限
+     * @param permissions 允许操作的权限
+     */
+
+    @AccessDecorator(['create', 'publish', 'update', 'delete'])
+    publish(permissions?: string[]) {
+        // const permissions = arguments[0]
+        console.log('传过来的参数: ', permissions)
+        console.log('发布文章')
+    }
+}
+
+new Article().publish()
+```
+
+- 示例(7): 请求装饰
+```ts
+type UserType = {
+    name: string,
+    age: number
+}
+
+const RequestDecorator = (url: string): MethodDecorator => (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const fn: (users: UserType[]) => void = descriptor.value;
+    descriptor.value = () => {
+        new Promise<UserType[]>((resolve, reject) => {
+            try {
+                // throw new Error('请求失败')
+                setTimeout(() => {
+                    resolve([{ name: 'zs', age: 18 }, { name: 'ls', age: 19 }])
+                }, 1000)
+            } catch (error: any) {
+                reject(error.message)
+            }
+        }).then(response => {
+            /** 请求成功的响应内容 */
+            fn(response)
+        }).catch(reason => {
+            /** 请求失败的错误原因 */
+            console.log(reason)
+        })
+    }
+}
+
+class User {
+    @RequestDecorator('https://www.zhouyu2156.cn/')
+    getUser(users: UserType[] = []) {
+        console.log(users)
+    }
+}
+
+new User().getUser()
+```
+
+
+### 4. 属性 & 参数装饰器
+```ts
+const PropDecorator: PropertyDecorator = (...args: any[])/** target: Object, propertyKey: string | symbol */ => {
+    // console.log(args)
+}
+const ParamDecorator: ParameterDecorator = (...args: any[])/** (target: Object, propertyKey: string | symbol, parameterIndex: number) */ => {
+    console.log(args)
+}
+
+class User {
+    /** 装饰普通属性, target 为普通对象 */
+    @PropDecorator
+    public title: string | undefined
+    /** 装饰静态成员属性, target 为类原型对象 */
+    @PropDecorator
+    public static content: string | undefined
+    /** 参数装饰器: 和属性装饰器类似, 普通方法的 target 为普通对象, 静态方法的 target 为类原型对象 */
+    public show(id: number = 1, title: string, @ParamDecorator content: string) { }
+    public static greet(id: number = 1, @ParamDecorator title: string = '静态方法的参数装饰器', content: string) { }
+}
+```
+
+- 示例(1): 装饰属性扩大倍数
+```ts
+const DoubleDecorator: PropertyDecorator = (target: Object, propertyKey: string | symbol) => {
+    let value: number
+    Object.defineProperty(target, propertyKey, {
+        get: () => value,
+        set: (v: number) => value = v * 2
+    })
+}
+class User {
+    @DoubleDecorator
+    public num: number | undefined
+}
+
+const user = new User()
+user.num = 50
+console.log(user.num)
+```
+
+### 5. 给属性设置元数据
+
+> 需要先按照第三方包
+```bash
+$ npm install reflect-metadata
+```
+
+- 示例: 给属性设置元数据
+
+```ts
+import 'reflect-metadata'
+
+const user = {
+    name: 'zhouyu'
+}
+
+/** 给属性设置元数据 */
+Reflect.defineMetadata('site', { url: 'www.zhouyu2156.cn' }, user, 'name')
+
+/** 查看属性身上添加的元数据 */
+console.warn(Reflect.getMetadata('site', user, 'name'))
+```
+
+

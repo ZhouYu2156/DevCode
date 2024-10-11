@@ -372,6 +372,496 @@ class CourseList(View):
 
 
 
+from drf_tutorial.urls import urlpatterns
+
+# DRF API开发教程
+
+## 移除所有第三方包依赖
+
+```bash
+$ pip freeze | xargs pip uninstall -y     # 卸载所有第三方包
+$ pip cache purge                         # 清理包下载缓存
+```
+
+## 使用原生 Django 开发API接口
+
+```python
+import json
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views import View
+
+
+# Django FBV 编写API接口
+@csrf_exempt
+def course_list(request):
+    course_dict = {
+        'name': 'Django',
+        'price': 0.11
+    }
+    if request.method == 'GET':
+        return HttpResponse(json.dumps(course_dict), content_type='application/json')
+        # return JsonResponse(course_dict)
+
+    if request.method == 'POST':
+        course = json.loads(request.body.decode('utf-8'))
+        return HttpResponse(json.dumps(course), content_type='application/json')
+        # return JsonResponse(course, safe=False)
+
+# Django CBV 编写API接口
+@method_decorator(csrf_exempt, name='dispatch')
+class CourseList(View):
+    """
+    编写对应的方法执行的视图函数
+    """
+    def dispatch(self, request, *args, **kwargs):
+        print('这个方法用于根据请求方法来控制视图分发')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass
+```
+
+> 使用Django原生的方式编写API接口, 很多东西需要从零开始实现, 比如: 分页、排序、认证、权限、限流等
+
+
+## 使用 Django REST Framework 开发API接口
+```python
+from rest_framework.decorators import api_view
+
+"""一、函数式编程: Function Based View"""
+@api_view(['GET', 'POST'])
+def course_list(request):
+    """
+    获取所有课程或新增一个课程
+    """
+    course_dict = {
+        'name': 'Django',
+        'price': 0.99
+    }
+    if request.method == 'GET':
+        pass
+    elif request.method == 'POST':
+        pass
+```
+
+## 使用 DRF的APIView来开发接口 
+
+### 1. 创建模型
+```python
+# todo/models.py
+from django.db import models
+
+class Todo(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=32)
+    done = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+```
+
+### 2. 创建视图
+
+- 2.1 使用 `Python` 注释风格编写API文档描述
+```python
+# todo/views.py
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import serializers
+from rest_framework import status
+
+from .models import Todo
+
+
+class TodoSerializer(serializers.Serializer):
+    """ 某个模型的序列化器 """
+    
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=32)
+    done = serializers.BooleanField()
+
+    def create(self, validated_data):
+        # 将实例对象返回出去
+        instance = Todo.objects.create(**validated_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        # 更新实例对象
+        Todo.objects.filter(pk=instance.pk).update(**validated_data)
+        return instance
+
+
+
+class TodosView(APIView):
+    """
+    查询集列表数据 & 创建新对象
+    """
+    def get(self, request):
+        """
+        获取查询集数据列表
+        """
+        # 查询实例对象列表
+        todos = Todo.objects.all()
+        # 序列化实例对象列表, 传入 instance 表示要将查询集进行序列化为 JSON 数据
+        serializer = TodoSerializer(instance=todos, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        """
+        创建一条新对象
+        """
+        # 没有传 instance 参数, 会走新建对象的逻辑
+        serializer = TodoSerializer(data=request.data)
+        # 对字段规则进行校验
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            # 返回字段校验错误信息
+            return Response(serializer.errors)
+
+
+class TodoDetailView(APIView):
+    """
+    单条数据对象: 查 & 删 & 改
+    
+    GET: 查询单条数据对象
+    PUT: 更新单条数据对象
+    DELETE: 删除单条数据对象
+    """
+
+    def get(self, request, pk):
+        instance = Todo.objects.get(pk=pk)
+        serializer = TodoSerializer(instance=instance)
+        return Response(serializer.data)
+
+
+    def put(self, request, pk):
+        todo = Todo.objects.get(pk=pk)
+        # 创建只需要传入 data 参数, 更新需要传入更新的参考数据源和需要更新的实例对象
+        serializer = TodoSerializer(instance=todo, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        Todo.objects.get(pk=pk).delete()
+        return Response()
+```
+
+- 2.2 使用 `markdown` 风格编写API文档描述(需额外配置)
+
+**安装依赖**
+```bash
+$ pip install markdown
+```
+**编写 & 配置渲染器**
+```python
+# APIRenderers
+# todo/renderers.py
+from rest_framework.renderers import BaseRenderer
+import markdown
+
+class MarkdownRenderer(BaseRenderer):
+    media_type = 'text/html'
+    format = 'html'
+    charset = 'utf-8'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        # 将 Markdown 转换为 HTML
+        return markdown.markdown(data)
+```
+
+```python
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'todo.renderers.MarkdownRenderer'           # 添加自定义渲染器
+    ],
+}
+```
+
+- API示例代码
+
+```python
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import serializers
+from rest_framework import status
+
+from .models import Todo
+
+
+class TodoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = ('id', 'name', 'done')
+
+
+class TodosView(APIView):
+    """
+    Todo 列表操作
+
+    - **GET**: 获取所有 Todo 项的列表。
+    - **POST**: 创建一个新的 Todo 项。
+
+    ### GET 请求
+    - **URL**: `/todos/`
+    - **响应**:
+      - **200 OK**: 返回一个包含所有 Todo 项的列表。
+
+    ### POST 请求
+    - **URL**: `/todos/`
+    - **请求体**:
+      - `name`: Todo 项的名称 (必填)
+      - `done`: 是否已完成 (可选，默认为 False)
+    - **响应**:
+      - **201 Created**: 创建成功，返回新创建的 Todo 项的信息。
+      - **400 Bad Request**: 请求体验证失败。
+    """
+
+    def get(self, request):
+        """
+        获取所有 Todo 项的列表。
+
+        - **URL**: `/todos/`
+        - **响应**:
+          - **200 OK**: 返回一个包含所有 Todo 项的列表。
+        """
+        todos = Todo.objects.all()
+        serializer = TodoSerializer(instance=todos, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        """
+        创建一个新的 Todo 项。
+
+        - **URL**: `/todos/`
+        - **请求体**:
+          - `name`: Todo 项的名称 (必填)
+          - `done`: 是否已完成 (可选，默认为 False)
+        - **响应**:
+          - **201 Created**: 创建成功，返回新创建的 Todo 项的信息。
+          - **400 Bad Request**: 请求体验证失败。
+        """
+        serializer = TodoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TodoDetailView(APIView):
+    """
+    Todo 项的详细操作
+
+    - **GET**: 获取指定 ID 的 Todo 项详情。
+    - **PUT**: 更新指定 ID 的 Todo 项。
+    - **DELETE**: 删除指定 ID 的 Todo 项。
+
+    ### GET 请求
+    - **URL**: `/todos/<int:pk>/`
+    - **响应**:
+      - **200 OK**: 返回指定 Todo 项的详细信息。
+
+    ### PUT 请求
+    - **URL**: `/todos/<int:pk>/`
+    - **请求体**:
+      - `name`: Todo 项的名称 (可选)
+      - `done`: 是否已完成 (可选)
+    - **响应**:
+      - **200 OK**: 更新成功，返回更新后的 Todo 项信息。
+      - **400 Bad Request**: 请求体验证失败。
+
+    ### DELETE 请求
+    - **URL**: `/todos/<int:pk>/`
+    - **响应**:
+      - **204 No Content**: 删除成功。
+    """
+
+    def get(self, request, pk):
+        """
+        获取指定 ID 的 Todo 项详情。
+
+        - **URL**: `/todos/<int:pk>/`
+        - **响应**:
+          - **200 OK**: 返回指定 Todo 项的详细信息。
+        """
+        instance = Todo.objects.get(pk=pk)
+        serializer = TodoSerializer(instance=instance)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        """
+        更新指定 ID 的 Todo 项。
+
+        - **URL**: `/todos/<int:pk>/`
+        - **请求体**:
+          - `name`: Todo 项的名称 (可选)
+          - `done`: 是否已完成 (可选)
+        - **响应**:
+          - **200 OK**: 更新成功，返回更新后的 Todo 项信息。
+          - **400 Bad Request**: 请求体验证失败。
+        """
+        todo = Todo.objects.get(pk=pk)
+        serializer = TodoSerializer(todo, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        """
+        删除指定 ID 的 Todo 项。
+
+        - **URL**: `/todos/<int:pk>/`
+        - **响应**:
+          - **204 No Content**: 删除成功。
+        """
+        Todo.objects.get(pk=pk).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+```
+
+### 3. 配置路由
+```python
+# todo/urls.py
+from django.urls import path, re_path
+from .views import TodosView, TodoDetailView
+
+urlpatterns = [
+    # 查询集列表数据 & 创建新对象
+    path('todos/', TodosView.as_view()),
+    # 单条数据对象: 查 & 删 & 改
+    re_path('todos/(\d+)/', TodoDetailView.as_view())
+]
+```
+
+```python
+# 总路由 urls.py
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('todo/', include('todo.urls')),
+    path('docs/', include_docs_urls(title="API文档配置示例")),
+]
+```
+
+### 生成 API 文档
+
+#### 1. 使用 `coreapi` 生成 `API` 文档
+
+- 配置 `settings.py`
+
+```python
+# settings.py
+
+INSTALLED_APPS = [
+    # ...
+    'todo',
+    'coreapi',
+    'rest_framework',
+]
+
+# ...
+
+# DRF 的全局配置
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+}
+```
+
+- 配置路由
+
+```python
+# 总路由下面添加 API 文档路由
+from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
+
+urlpatterns = [
+    # ...
+    path('api/', include('todo.urls')),
+    path('docs/', include_docs_urls(title="API文档配置示例")),
+]
+```
+
+> 访问: `http://127.0.0.1:8000/docs/`
+
+#### 2. 使用 `drf-yasg` 生成 `API` 文档
+- 安装依赖包:
+```bash
+$ pip install drf-yasg
+```
+
+- 配置 `settings.py`:
+```python
+INSTALLED_APPS = [
+    # ...
+    'drf_yasg',
+]
+```
+
+- 配置路由:
+```python
+# 总路由下面添加 API 文档路由 urls.py
+from django.contrib import admin
+from django.urls import path, include, re_path
+from rest_framework.documentation import include_docs_urls
+
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+# 配置 swagger
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Swagger API",
+      default_version='v1',
+      description="API文档配置示例详情描述",
+      terms_of_service="https://ZhouYu2156.github.io/",
+      contact=openapi.Contact(email="contact@snippets.local"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=[permissions.AllowAny],
+)
+
+urlpatterns = [
+    # ...
+    path('admin/', admin.site.urls),
+    path('api/', include('todo.urls')),
+    path('docs/', include_docs_urls(title="API文档配置示例")),
+    re_path(r'^swagger(?P<format>.json|.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+]
+```
+
+
+
+- 技术参考: [DRF自动生成接口文档：coreapi和Swagger](https://www.cnblogs.com/tully/p/16979367.html)
+- 技术参考: [解锁API文档自动化魔力：探索drf-yasg](https://www.bmabk.com/index.php/post/282733.html)
+- 技术博客: [DRF__自动生成接口文档](https://blog.51cto.com/u_15127648/4413534)
+- 技术参考: [【drf 生成接口文档】](https://blog.csdn.net/Ban_a/article/details/127527228)
+- 技术参考: [DRF自动生成接口文档：coreapi和Swagger 
+](https://www.cnblogs.com/tully/p/16979367.html)
+
+- 推荐阅读: [DRF官方文档](https://www.django-rest-framework.org/api-guide/schemas/)
+- 推荐阅读: [drf-yasg 官方文档](https://drf-yasg.readthedocs.io/en/stable/settings.html)
+
+
 
 
 

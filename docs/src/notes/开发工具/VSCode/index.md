@@ -71,120 +71,25 @@
 
 ## 三、VSCode 习惯配置
 
+- 我的VSCode配置文件
+
 ::: details
 ::: code-group
 
 ```json [settings.json]
+/** VSCode > settings.json */
 {
-    // 窗口设置
-    "workbench.tree.indent": 16, // 控制项目文件结构层级缩进
-    "workbench.colorTheme": "Atom One Dark", // 启用主题
-    "workbench.iconTheme": "material-icon-theme", // 文件图标主题(特别的文件会显示特殊图标)
-    "security.workspace.trust.untrustedFiles": "open", // 打开任何文件时都不提示 "是否安全信任", 而是直接打开
-    "explorer.confirmDelete": false, // 删除文件时, 不需要再确认是否放入回收站
-    "explorer.confirmDragAndDrop": false, // 拖拽文件到其他目录中时不再需要确认
-    "diffEditor.wordWrap": "on", // 文本将在视区宽度处换行
-    "window.zoomLevel": 1, // 窗口放大级别, 数字越大, 窗口放大越大. Ctrl + -/+ 控制窗口大小
-    // 编辑区设置
-    "editor.fontSize": 16, // 编辑区字体大小
-    "editor.tabSize": 4, // 一个 tab 等于的空格数
-    "editor.wordWrap": "on", // 控制超过视区宽度自动折行、换行
-    "editor.formatOnSave": true, // 在保存时自动格式化
-    "editor.mouseWheelZoom": true, // 鼠标滚轮缩放编辑区字体大小
-    "editor.minimap.enabled": false, // 是否显示缩略图
-    "editor.minimap.maxColumn": 120, // 控制缩略图的宽度
-    "editor.lineNumbers": "on", // 编辑区行号显示
-    "editor.fontLigatures": true, // 启用字体连字
-	"editor.suggest.showIcons": true,// 控制是否在内联建议中显示或隐藏图标。
-    "editor.suggest.showInlineDetails": true,   // 是否显示具体的提示内容
-    "editor.suggest.showMethods": true,         // 显示方法建议
-    // 字体配置: @参考: https://doc.houdunren.com/开发环境/字体.html
-    // "editor.fontFamily": "Consolas, 'Courier New', monospace",   // 编辑区默认字体
-    "editor.fontFamily": "Cascadia Code, 'Cascadia Mono', Consolas", // 编辑区字体
-    // 终端设置
-    "terminal.integrated.defaultProfile.windows": "Git Bash", // 集成终端类型, 这里采用 Git Bash(需要提前下载 Git 工具)
-    "terminal.external.windowsExec": "E:\\Program Files\\Git\\bin\\bash.exe",
-    // Live Server 插件设置
-    "liveServer.settings.donotShowInfoMsg": true, // Live Server 不再提示弹出提示消息
-    // 语言设置
-    "javascript.suggest.paths": true, // js语言中路径提示
-    "typescript.suggest.paths": true, // ts语言中路径提示
-    "editor.stickyScroll.enabled": false,   // 滚动过程中, 显示当前行所属的作用域(默认 true)
-    // 对 typescript 语言设置
-    "typescript.updateImportsOnFileMove.enabled": "always", // 重命名或移动文件时自动更新导入路径
-    "[typescript]": {
-        "typescript.suggest.enabled": true,
-        "editor.defaultFormatter":"vscode.typescript-language-features",
-    },
-    // 对 javascript 语言设置
-    "[javascript]": {
-        "javascript.suggest.enabled": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"    // 指定格式化程序, 提供丰富的语言支持
-    },
-    "workbench.editor.enablePreview": false, // 禁用预览模式
-    /* 禅模式设置 */
-    "zenMode.centerLayout": false,      // 禅模式下是否使用居中布局
-    "zenMode.hideStatusBar": false,     // 控制在打开禅模式时是否隐藏工作台底部的状态栏
-    "window.customTitleBarVisibility": "windowed",
-    "workbench.activityBar.location": "default", // 开启命令中心
-    "vue.autoInsert.dotValue": true,    // 设置vue中的 ref 变量自动点value
-    "vue.server.hybridMode": true,
-    "[vue]": {
-        "editor.defaultFormatter": "Vue.volar"
-    },
-    "zenMode.hideLineNumbers": false, // 禅模式是否隐藏行号
-    "tabnine.experimentalAutoImports": true,    // tabnine 自动补全
-    // 配置 ssh 连接的远程服务器
-    "remote.SSH.remotePlatform": {
-        "docker": "linux"
-    },
-    "[html]": {
-        "editor.defaultFormatter": "vscode.html-language-features"
-    },
-    "files.associations": {
-        "*.mts": "typescript",
-        "*.ts": "typescript"
-    },
-    "files.autoSave":"onWindowChange", // 在窗口改变时(从vscode到别的窗口)自动保存文件，可选值 onFocusChange, onWindowChange, off, afterDelay
-	// typescript 配置隐式参数类型提示
-    "typescript.inlayHints.variableTypes.enabled": true, // 启用ts中变量的类型提示
-    "typescript.inlayHints.propertyDeclarationTypes.enabled": true, // 启用(类或构造函数的)属性声明中隐式类型提示
-    "typescript.inlayHints.functionLikeReturnTypes.enabled": true, // 启用函数返回类型提示
-    "typescript.inlayHints.parameterNames.enabled": "all", // 启用函数参数名称提示
-    "typescript.suggest.completeFunctionCalls": true, // 自动完成函数调用时的参数签名(必选参数全部列出来, 可选参数会有提示)
-	// javascript 配置隐式参数类型提示
-	"javascript.inlayHints.variableTypes.enabled": true, // 启用ts中变量的类型提示
-    "javascript.inlayHints.propertyDeclarationTypes.enabled": true, // 启用(类或构造函数的)属性声明中隐式类型提示
-    "javascript.inlayHints.functionLikeReturnTypes.enabled": true, // 启用函数返回类型提示
-    "javascript.inlayHints.parameterNames.enabled": "all", // 启用函数参数名称提示
-    "javascript.suggest.completeFunctionCalls": true, // 自动完成函数调用时的参数签名(必选参数全部列出来, 可选参数会有提示)
-    "explorer.confirmPasteNative": true,    // 在复制粘贴文件时, 不需要确认是否覆盖
-    "window.commandCenter": false,  // 关闭窗口顶部的命令中心输入框
-    "[markdown]": {
-        "editor.defaultFormatter": "yzhang.markdown-all-in-one" // markdown格式化插件来格式化代码
-    },
-    "[scss]": {
-        "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter", // scss格式化插件来格式化代码
-    },
-	"javascript.suggest.completeJSDocs": true, // 自动完成jsdoc注释
-	"javascript.inlayHints.enumMemberValues.enabled": true, // 枚举值提示
-    "javascript.format.semicolons": "remove",               // js语句末尾分号处理
-    "javascript.format.insertSpaceBeforeAndAfterBinaryOperators": true,    // 二元运算符前后是否插入空格
-    "javascript.inlayHints.parameterTypes.enabled": true, // 隐式参数类型提示
-}
-```
-
-```json [最新版 settings.json]
-{
-  // 窗口设置
-  "workbench.tree.indent": 16, // 控制项目文件结构层级缩进
-  "workbench.colorTheme": "Monokai Pro (Filter Machine)", // 启用主题
+  // 主题配置
+  "workbench.tree.indent": 16, // 目录树视图缩进宽度
+  "workbench.colorTheme": "Monokai Pro (Filter Spectrum)", // 主题颜色
   "workbench.iconTheme": "material-icon-theme", // 文件图标主题(特别的文件会显示特殊图标)
-  "security.workspace.trust.untrustedFiles": "open", // 打开任何文件时都不提示 "是否安全信任", 而是直接打开
+  // 安全设置
+  "security.workspace.trust.untrustedFiles": "open", // 打开文件时不要提示 "是否安全信任"
+  "security.promptForLocalFileProtocolHandling": false,  // 在使用本地协议打开文件时不要弹出提示
+  // 文件操作设置
   "explorer.confirmDelete": false, // 删除文件时, 不需要再确认是否放入回收站
   "explorer.confirmDragAndDrop": false, // 拖拽文件到其他目录中时不再需要确认
-  "diffEditor.wordWrap": "on", // 文本将在视区宽度处换行
-  "window.zoomLevel": 1, // 窗口放大级别, 数字越大, 窗口放大越大. Ctrl + -/+ 控制窗口大小
+  "explorer.confirmPasteNative": true, // 在复制粘贴文件时, 不需要确认是否覆盖
   // 编辑区设置
   "editor.fontSize": 16, // 编辑区字体大小
   "editor.tabSize": 4, // 一个 tab 等于的空格数
@@ -194,94 +99,125 @@
   "editor.minimap.enabled": false, // 是否显示缩略图
   "editor.minimap.maxColumn": 120, // 控制缩略图的宽度
   "editor.lineNumbers": "on", // 编辑区行号显示
-  "editor.fontLigatures": true, // 启用字体连字
   "editor.suggest.showIcons": true, // 控制是否在内联建议中显示或隐藏图标。
   "editor.suggest.showInlineDetails": true, // 是否显示具体的提示内容
   "editor.suggest.showMethods": true, // 显示方法建议
+  "editor.accessibilitySupport": "off", // 启用无障碍支持
+  "diffEditor.wordWrap": "on", // 文本将在视区宽度处换行
+  "prettier.semi": true, // 语句末尾是否添加分号
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.autoSave": "onWindowChange", // 在窗口改变时(从vscode到别的窗口)自动保存文件，可选值: onFocusChange, onWindowChange, off, afterDelay
+  "editor.stickyScroll.enabled": false, // 滚动过程中, 显示当前行所属的作用域(默认 true)
   // 字体配置: @参考: https://doc.houdunren.com/开发环境/字体.html
   // "editor.fontFamily": "Consolas, 'Courier New', monospace",   // 编辑区默认字体
-  "editor.fontFamily": "Cascadia Code, 'Cascadia Mono', Consolas", // 编辑区字体
+  // "editor.fontFamily": "Cascadia Code, 'Cascadia Mono', Consolas", // 编辑区字体
+  "editor.fontFamily": "CascadiaCodePL-Light,CascadiaCodePL-ExtraLight",
+  "editor.fontLigatures": true, // 启用字体连字
   // 终端设置
   "terminal.integrated.defaultProfile.windows": "Git Bash", // 集成终端类型, 这里采用 Git Bash(需要提前下载 Git 工具)
-  "terminal.external.windowsExec": "E:\\Program Files\\Git\\bin\\bash.exe",
-  // Live Server 插件设置
+  "terminal.external.windowsExec": "D:\\Program Files\\Git\\bin\\bash.exe",
+  // "terminal.integrated.defaultProfile.windows":"Command Prompt",
+  // "terminal.external.windowsExec": "C:\\Windows\\System32\\cmd.exe",
+  // Live Server(实时服务器) 插件设置
   "liveServer.settings.donotShowInfoMsg": true, // Live Server 不再提示弹出提示消息
-  // 语言设置
-  "javascript.suggest.paths": true, // js语言中路径提示
-  "typescript.suggest.paths": true, // ts语言中路径提示
-  "editor.stickyScroll.enabled": false, // 滚动过程中, 显示当前行所属的作用域(默认 true)
-  // 对 typescript 语言设置
-  "typescript.updateImportsOnFileMove.enabled": "always", // 重命名或移动文件时自动更新导入路径
-  "[typescript]": {
-  
-    "typescript.suggest.enabled": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  // 对 javascript 语言设置
+  /* 对 javascript 语言设置 */
   "[javascript]": {
     "javascript.suggest.enabled": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode" // 指定格式化程序, 提供丰富的语言支持
   },
-  "workbench.editor.enablePreview": false, // 禁用预览模式
-  /* 禅模式设置 */
-  "zenMode.centerLayout": false, // 禅模式下是否使用居中布局
-  "zenMode.hideStatusBar": false, // 控制在打开禅模式时是否隐藏工作台底部的状态栏
-  "window.customTitleBarVisibility": "windowed",
-  "workbench.activityBar.location": "default", // 开启命令中心
-  "vue.autoInsert.dotValue": true, // 设置vue中的 ref 变量自动点value
-  "vue.server.hybridMode": true,
-  "[vue]": {
-    "editor.defaultFormatter": "Vue.volar"
-  },
-  "zenMode.hideLineNumbers": false, // 禅模式是否隐藏行号
-  "tabnine.experimentalAutoImports": true, // tabnine 自动补全
-  "jsonc": "",
-  // 配置 ssh 连接的远程服务器
-  "remote.SSH.remotePlatform": {
-    "docker": "linux"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
-  },
-  "files.associations": {
-    "*.mts": "typescript",
-    "*.ts": "typescript",
-    "*.json": "jsonc"
-  },
-  "files.autoSave": "onWindowChange", // 在窗口改变时(从vscode到别的窗口)自动保存文件，可选值 onFocusChange, onWindowChange, off, afterDelay
-  // typescript 配置隐式参数类型提示
-  "typescript.inlayHints.variableTypes.enabled": true, // 启用ts中变量的类型提示
-  "typescript.inlayHints.propertyDeclarationTypes.enabled": true, // 启用(类或构造函数的)属性声明中隐式类型提示
-  "typescript.inlayHints.functionLikeReturnTypes.enabled": true, // 启用函数返回类型提示
-  "typescript.inlayHints.parameterNames.enabled": "all", // 启用函数参数名称提示
-  "typescript.suggest.completeFunctionCalls": true, // 自动完成函数调用时的参数签名(必选参数全部列出来, 可选参数会有提示)
+  "javascript.suggest.paths": true, // js语言中import导入时的路径提示
   // javascript 配置隐式参数类型提示
   "javascript.inlayHints.variableTypes.enabled": true, // 启用ts中变量的类型提示
   "javascript.inlayHints.propertyDeclarationTypes.enabled": true, // 启用(类或构造函数的)属性声明中隐式类型提示
   "javascript.inlayHints.functionLikeReturnTypes.enabled": true, // 启用函数返回类型提示
   "javascript.inlayHints.parameterNames.enabled": "all", // 启用函数参数名称提示
   "javascript.suggest.completeFunctionCalls": true, // 自动完成函数调用时的参数签名(必选参数全部列出来, 可选参数会有提示)
-  "explorer.confirmPasteNative": false, // 在复制粘贴文件时, 不需要确认是否覆盖
-  "window.commandCenter": false, // 关闭窗口顶部的命令中心输入框
+  "javascript.suggest.completeJSDocs": true, // 自动完成jsdoc注释
+  "javascript.inlayHints.enumMemberValues.enabled": false, // 枚举值提示
+  "javascript.format.semicolons": "insert", // js语句末尾分号处理
+  "javascript.inlayHints.parameterTypes.enabled": false, // 函数参数类型提示
+  "javascript.updateImportsOnFileMove.enabled": "always", // 重命名或移动文件时自动更新导入路径
+  /* 对 typescript 语言设置 */
+  "[typescript]": {
+    "typescript.suggest.enabled": true,
+    // "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.suggest.paths": true, // ts语言中import导入时的路径提示
+  "typescript.suggest.completeJSDocs": true, // 自动完成jsdoc注释
+  "typescript.updateImportsOnFileMove.enabled": "always", // 重命名或移动文件时自动更新导入路径
+  // typescript 配置隐式参数类型提示
+  "typescript.inlayHints.variableTypes.enabled": false, // 启用ts中变量的类型提示
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": false, // 启用(类或构造函数的)属性声明中隐式类型提示
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": false, // 启用函数返回类型提示
+  "typescript.inlayHints.parameterNames.enabled": "none", // 启用函数参数名称提示
+  "typescript.suggest.completeFunctionCalls": false, // 自动完成函数调用时的参数签名(必选参数全部列出来, 可选参数会有提示)
+  "typescript.format.semicolons": "insert", // ts语句末尾分号处理
+  "typescript.format.insertSpaceBeforeFunctionParenthesis": true, // 函数名和括号之间是否有空格
+  "typescript.format.placeOpenBraceOnNewLineForFunctions": false, // 函数定义时是否换行
+  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false, // 控制语句块是否换行
+  "typescript.format.insertSpaceBeforeAndAfterBinaryOperators": true, // 二元运算符前后是否插入空格
+  /* vue设置 */
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+    // "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "vue.autoInsert.dotValue": true, // 设置vue中的 ref 变量自动点value
+  "vue.server.hybridMode": true, // 启用TS插件混合模式
+  /* html格式化插件设置 */
+  "[html]": {
+    "editor.defaultFormatter": "ecmel.vscode-html-css"
+  },
+  /* 设置文件后缀类型关联使用的编程语言系统 */
+  "files.associations": {
+    "*.mts": "typescript",
+    "*.ts": "typescript",
+    "*.json": "jsonc"
+  },
+  /** markdown格式化插件 */
   "[markdown]": {
     "editor.defaultFormatter": "yzhang.markdown-all-in-one" // markdown格式化插件来格式化代码
   },
+  /** scss格式化插件 */
   "[scss]": {
     "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter" // scss格式化插件来格式化代码
   },
-  "javascript.suggest.completeJSDocs": true, // 自动完成jsdoc注释
-  "javascript.inlayHints.enumMemberValues.enabled": true, // 枚举值提示
-  "javascript.format.semicolons": "remove", // js语句末尾分号处理
-  "javascript.format.insertSpaceBeforeAndAfterBinaryOperators": true, // 二元运算符前后是否插入空格
-  "javascript.inlayHints.parameterTypes.enabled": true, // 隐式参数类型提示
+  /** ts-react格式化插件 */
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  // 窗口设置
+  "window.zoomLevel": 1, // 窗口放大级别, 数字越大, 窗口放大越大. Ctrl + -/+ 控制窗口大小
+  /* 禅模式设置 */
+  "zenMode.centerLayout": false, // 禅模式下是否使用居中布局
+  "zenMode.hideLineNumbers": false, // 禅模式是否隐藏行号
+  "zenMode.hideStatusBar": false, // 控制在打开禅模式时是否隐藏工作台底部的状态栏
+  "window.customTitleBarVisibility": "windowed", // 开启命令中心
+  "window.commandCenter": false, // 关闭窗口顶部的命令中心输入框
+  /* 设置文档注释翻译 */
+  "commentTranslate.source": "Bing", // 翻译源服务器
+  "commentTranslate.browse.mode": "contrast", // 对比翻译模式
+  "workbench.editor.enablePreview": false, // 禁用预览模式
+  "commentTranslate.multiLineMerge": true, // 多行注释翻译
+  "commentTranslate.targetLanguage": "zh-CN", // 翻译目标语言
+  "commentTranslate.hover.concise": true,// 悬停翻译
+  // Live Server 插件设置
+  "liveServer.settings.donotShowInfoMsg": true, // Live Server 不再提示弹出提示消息
+  // 配置 ssh 连接的远程服务器
+  "remote.SSH.remotePlatform": {
+      "docker": "linux"
+  },
+    "[scss]": {
+    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter" // scss格式化插件来格式化代码
+  },
   "liveSassCompile.settings.formats": [
     {
       /*
-                          nested: 嵌套格式
-                          expanded: 展开格式
-                          compact: 紧凑格式
-                          compressed: 压缩格式
-                      */
+      nested: 嵌套格式
+      expanded: 展开格式
+      compact: 紧凑格式
+      compressed: 压缩格式
+      */
       "format": "expanded", // 编译的css格式
       "extensionName": ".css", // 扩展名
       "savePath": "/dist" // 保存路径(null 的话, 保存到和源文件同一目录。 ~、/标识当前VSCode打开的项目根目录)
@@ -308,10 +244,35 @@
         "last 2 versions",  // 兼容最新两个版本
     ]*/
 }
-
 ```
 
 :::
+
+
+- 我的快捷键
+```txt
+Ctrl + Shift + P	命令快捷查找窗口
+Ctrl + K, ctrl + S	打开命令快捷键设置
+Ctrl + ,		打开设置
+Ctrl + Shift + ,	打开json配置文件
+Ctrl + Shift + N	打开新的VSCode窗口
+
+Ctrl + P	函数参数提示
+Ctrl + T, Ctrl + N	创建新终端
+Ctrl + T, Ctrl + K	拆分终端
+Ctrl + T, Ctrl + D	销毁当前活动终端实例
+Ctrl + Shift + C	打开新的外部终端
+Ctrl + J		显示/隐藏活动面板
+
+Ctrl + K, Ctrl + T	切换主题(通过上下键选择,回车确认使用)
+
+Alt + Shift + Z		翻译对比显示
+Alt + Shift + B		原地占位替换显示/生成运行任务(比如构建TS编译任务)
+PgUp			窗口可见行数向上翻页
+PgOn			窗口可见行数向下翻页
+
+Ctrl + Shift + Z	搜狗输入法的符号大全
+```
 
 
 ## 四、模板代码
